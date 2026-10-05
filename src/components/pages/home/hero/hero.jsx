@@ -4,7 +4,9 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import ImagePlaceholder from 'components/shared/image-placeholder';
+import Link from 'components/shared/link';
 import TitleAnimation from 'components/shared/title-animation';
+import LINKS from 'constants/links';
 
 import lgIllustration1 from './images/lg-illustration-1.svg';
 import lgIllustration2 from './images/lg-illustration-2.svg';
@@ -14,39 +16,33 @@ const STATE_MACHINE_NAME = 'State Machine';
 const INPUT_NAME = 'Fall Trigger';
 
 const firstSectionTitleItems = [
-  { value: 'A' },
-  { value: 'marketing' },
-  { value: 'website' },
-  { value: 'is' },
+  { value: 'Transform' },
+  { value: 'Your' },
+  { value: 'Brand', color: '#2b4bee' },
+  { value: 'Into' },
   { value: 'a' },
-  { value: 'complex', color: '#2b4bee' },
-  { value: 'thing' },
-  { value: 'to' },
-  { value: 'build' },
-  { value: 'on' },
-  { value: 'your own', color: '#ee2b6c' },
+  { value: 'Marketing' },
+  { value: 'Powerhouse', color: '#ee2b6c' },
 ];
 
 const secondSectionTitleItems = [
-  { value: 'You' },
-  { value: 'either' },
-  { value: 'ask' },
-  { value: 'your' },
-  { value: 'team', color: '#2b4bee' },
-  { value: 'of' },
-  { value: 'specialists' },
-  { value: 'from' },
-  { value: 'adjacent fields', color: '#ee2b6c' },
+  { value: 'We' },
+  { value: 'help' },
+  { value: 'businesses', color: '#2b4bee' },
+  { value: 'reach' },
+  { value: 'their' },
+  { value: 'full' },
+  { value: 'potential', color: '#ee2b6c' },
 ];
 
 const thirdSectionTitleItems = [
-  { value: 'Or' },
-  { value: 'go' },
-  { value: 'wild' },
-  { value: 'cherry-picking', color: '#2b4bee' },
+  { value: 'Through' },
+  { value: 'innovative' },
+  { value: 'marketing', color: '#2b4bee' },
+  { value: 'strategies' },
   { value: '&' },
-  { value: 'managing' },
-  { value: 'freelancers', color: '#ee2b6c' },
+  { value: 'creative' },
+  { value: 'solutions', color: '#ee2b6c' },
 ];
 
 const Hero = () => {
@@ -63,7 +59,7 @@ const Hero = () => {
 
   const { RiveComponent, rive } = useRive({
     src: '/animations/pages/home/hero.riv',
-    autoplay: false,
+    autoplay: true,
     stateMachines: STATE_MACHINE_NAME,
     layout: new Layout({
       fit: Fit.FitWidth,
@@ -76,40 +72,45 @@ const Hero = () => {
   const [containerHeight, setContainerHeight] = useState(0);
   const [firstSectionHeight, setFirstSectionHeight] = useState(0);
   const [currentAnimState, setCurrentAnimState] = useState('');
-  const [isInitialAnimationCompleted, setIsInitialAnimationCompleted] = useState(false);
 
   const fallState = useStateMachineInput(rive, STATE_MACHINE_NAME, INPUT_NAME);
 
   useLayoutEffect(() => {
-    const containerRect = containerRef.current.getBoundingClientRect();
-    const firstSectionRect = firstSectionRef.current.getBoundingClientRect();
-    setFirstSectionHeight(firstSectionRect.height);
-    setContainerHeight(containerRect.height);
+    if (containerRef.current && firstSectionRef.current) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const firstSectionRect = firstSectionRef.current.getBoundingClientRect();
+      setFirstSectionHeight(firstSectionRect.height);
+      setContainerHeight(containerRect.height);
+    }
   }, []);
 
   useEffect(() => {
-    if (rive && isInitialAnimationCompleted) {
-      rive.play('State Machine');
+    if (rive) {
+      try {
+        rive.play('State Machine');
+      } catch (err) {
+        // Safe catch if already playing
+      }
     }
-  }, [isInitialAnimationCompleted, rive]);
+  }, [rive]);
 
   useEffect(() => {
     if (isWrapperInView) {
-      firstSectionTitleControls.start('animate').then(() => {
-        setIsInitialAnimationCompleted(true);
-      });
+      firstSectionTitleControls.start('animate');
     }
   }, [isWrapperInView, firstSectionTitleControls]);
 
   useEffect(() => {
-    if (currentAnimState === 'fall' && isSecondSectionInView)
+    if (isSecondSectionInView) {
       secondSectionTitleControls.start('animate');
-  }, [currentAnimState, isSecondSectionInView, secondSectionTitleControls]);
+    }
+  }, [isSecondSectionInView, secondSectionTitleControls]);
 
   useEffect(() => {
-    if (currentAnimState === 'fall' && isThirdSectionInView)
+    if (isThirdSectionInView) {
       thirdSectionTitleControls.start('animate');
-  }, [currentAnimState, isThirdSectionInView, thirdSectionTitleControls]);
+    }
+  }, [isThirdSectionInView, thirdSectionTitleControls]);
 
   useEffect(() => {
     // Add event listener to window scroll
@@ -117,15 +118,16 @@ const Hero = () => {
       if (
         currentAnimState !== 'fall' &&
         rive &&
-        rive.lastRenderTime > 0 &&
-        window.scrollY > firstSectionHeight - 600
+        window.scrollY > Math.max(firstSectionHeight - 600, 100)
       ) {
         window.rive = rive;
         setCurrentAnimState('fall');
-        fallState.fire();
+        if (fallState && typeof fallState.fire === 'function') {
+          fallState.fire();
+        }
       }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -133,27 +135,45 @@ const Hero = () => {
 
   return (
     <section
-      className="safe-paddings overflow-hidden bg-black text-white md:py-36 sm:pt-28 sm:pb-20"
+      className="safe-paddings overflow-hidden bg-transparent text-white md:py-36 sm:pt-28 sm:pb-20"
       ref={wrapperRef}
     >
       <div className="container grid-gap-x relative grid grid-cols-2 md:block" ref={containerRef}>
         <div className="relative z-10 text-6xl font-normal leading-snug lg:text-[42px] md:mx-auto md:text-4xl sm:text-2xl">
           <div className="flex h-screen items-center md:block md:h-auto" ref={firstSectionRef}>
-            <TitleAnimation
-              className="md:max-w-[574px]"
-              tag="h2"
-              items={firstSectionTitleItems}
-              animationName="first"
-              controls={firstSectionTitleControls}
-            />
+            <div>
+              <div className="flex items-center space-x-2.5 mb-5 text-sm font-semibold tracking-wider uppercase md:mb-4 sm:text-xs">
+                <span className="text-red">K's visuals</span>
+                <span className="text-white/40">/</span>
+                <span className="text-white/70">MARKETING SOLUTIONS</span>
+              </div>
+              <TitleAnimation
+                className="md:max-w-[574px]"
+                tag="h1"
+                items={firstSectionTitleItems}
+                animationName="first"
+                controls={firstSectionTitleControls}
+              />
+              <p className="mt-6 max-w-[520px] text-lg font-normal leading-relaxed text-white/80 md:mt-4 sm:mt-3 sm:text-base">
+                We help businesses reach their full potential through innovative marketing strategies and creative solutions.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-6 md:mt-6 sm:mt-5 sm:gap-4">
+                <Link to={LINKS.getStarted} size="base" theme="arrow-red" className="text-lg font-semibold sm:text-base">
+                  Get Started
+                </Link>
+                <Link to={LINKS.portfolio} size="base" theme="underline-red" className="text-lg sm:text-base">
+                  View Our Work
+                </Link>
+              </div>
+            </div>
             <ImagePlaceholder
-              className="mx-auto mt-11 hidden max-w-[468px] md:block sm:mt-8"
+              className="mx-auto mt-11 hidden max-w-[468px] md:block sm:mt-8 sm:max-w-full"
               width={468}
               height={380}
               aria-hidden
             >
               <img
-                className="remove-image-loading-visual"
+                className="remove-image-loading-visual w-full h-auto object-contain max-w-full"
                 src={lgIllustration1}
                 width={468}
                 height={380}
@@ -163,7 +183,7 @@ const Hero = () => {
             </ImagePlaceholder>
           </div>
           <div
-            className="flex items-center pt-[100px] pb-[500px] lg:pb-[400px] md:mt-36 md:block md:py-0 sm:mt-20"
+            className="flex items-center pt-[100px] pb-[500px] lg:pb-[400px] md:mt-36 md:block md:py-0 sm:mt-16"
             ref={secondSectionRef}
           >
             <TitleAnimation
@@ -174,13 +194,13 @@ const Hero = () => {
               controls={secondSectionTitleControls}
             />
             <ImagePlaceholder
-              className="mx-auto mt-11 hidden max-w-[590px] md:block sm:mt-8"
+              className="mx-auto mt-11 hidden max-w-[590px] md:block sm:mt-8 sm:max-w-full"
               width={590}
               height={700}
               aria-hidden
             >
               <img
-                className="remove-image-loading-visual"
+                className="remove-image-loading-visual w-full h-auto object-contain max-w-full"
                 src={lgIllustration2}
                 width={590}
                 height={700}
@@ -190,7 +210,7 @@ const Hero = () => {
             </ImagePlaceholder>
           </div>
           <div
-            className="flex items-center pt-[200px] pb-[360px] lg:pt-[150px] lg:pb-[300px] md:mt-36 md:block md:py-0 sm:mt-20"
+            className="flex items-center pt-[200px] pb-[80px] lg:pt-[150px] lg:pb-[60px] md:mt-36 md:block md:py-0 sm:mt-16"
             ref={thirdSectionRef}
           >
             <TitleAnimation
@@ -201,13 +221,13 @@ const Hero = () => {
               controls={thirdSectionTitleControls}
             />
             <ImagePlaceholder
-              className="mx-auto mt-11 hidden max-w-[590px] md:block sm:mt-8"
+              className="mx-auto mt-11 hidden max-w-[590px] md:block sm:mt-8 sm:max-w-full"
               width={590}
               height={766}
               aria-hidden
             >
               <img
-                className="remove-image-loading-visual"
+                className="remove-image-loading-visual w-full h-auto object-contain max-w-full"
                 src={lgIllustration3}
                 width={590}
                 height={766}

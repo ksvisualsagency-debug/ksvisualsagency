@@ -5,6 +5,7 @@ import React from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import Link from 'components/shared/link';
+import Showcase5 from 'components/ui/Showcase5';
 import LINKS from 'constants/links';
 import GithubLogo from 'images/github.inline.svg';
 
@@ -12,7 +13,7 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min)) + Math.ceil(min));
 }
 
-const Card = ({ logo, title, description, githubStars, isWrapperInView }) => {
+const Card = ({ logo, title, description, client, category, githubStars, isWrapperInView }) => {
   const { RiveComponent, rive } = useRive({
     src: '/animations/shared/case-studies-card.riv',
     autoplay: false,
@@ -26,18 +27,27 @@ const Card = ({ logo, title, description, githubStars, isWrapperInView }) => {
     if (rive && !rive.isPlaying) rive.play([`hover-${getRandomInt(1, 5)}`]);
   };
 
+  const displayTitle = client || title;
+  const displayDesc = category || description;
+
   return (
     <div className="block" onMouseEnter={handleMouseEnter}>
-      <h3 className="sr-only">{`${title} case study`}</h3>
+      <h3 className="sr-only">{`${displayTitle} project`}</h3>
       <div className="relative flex min-h-[200px] items-center justify-center overflow-hidden rounded-2xl bg-black lg:min-h-[154px] lg:rounded-xl md:min-h-[180px] sm:min-h-[170px]">
-        <img
-          className="relative z-10 lg:scale-[0.85] md:scale-100 sm:scale-[0.9]"
-          src={logo.url.publicURL}
-          loading="lazy"
-          alt={`${title} logo`}
-          height={logo.height}
-          width={logo.width}
-        />
+        {logo?.url?.publicURL ? (
+          <img
+            className="relative z-10 lg:scale-[0.85] md:scale-100 sm:scale-[0.9]"
+            src={logo.url.publicURL}
+            loading="lazy"
+            alt={`${displayTitle} logo`}
+            height={logo.height}
+            width={logo.width}
+          />
+        ) : (
+          <span className="relative z-10 text-2xl font-bold tracking-wider text-white">
+            {displayTitle}
+          </span>
+        )}
         {githubStars && (
           <div className="absolute top-3 left-3 z-10 flex items-center lg:top-2.5 lg:left-2.5 md:top-3 md:left-3">
             <GithubLogo className="h-[26px] text-white" />
@@ -51,7 +61,10 @@ const Card = ({ logo, title, description, githubStars, isWrapperInView }) => {
         )}
         {isWrapperInView && <RiveComponent className="absolute top-0 left-0 right-0 bottom-0" />}
       </div>
-      <p className="mt-2.5 text-lg font-normal leading-snug">{description}</p>
+      <div className="mt-3">
+        <h4 className="text-xl font-semibold leading-snug">{displayTitle}</h4>
+        <p className="mt-1 text-base text-gray-7 text-black/70 dark:text-white/70">{displayDesc}</p>
+      </div>
     </div>
   );
 };
@@ -75,7 +88,16 @@ Card.defaultProps = {
   isWrapperInView: false,
 };
 
-const CaseStudies = ({ title, itemsType, activeItemSlug, withoutTitleLink }) => {
+const ksVisualsProjects = [
+  { client: 'GUNATIT ENTERPRISE', category: 'CRM Software, Logo & Brand Design' },
+  { client: 'DIVINE Impex', category: 'Exhibition Marketing Flyer' },
+  { client: 'JP Architecture', category: 'Logo & Brand Design' },
+  { client: 'NK The Health Hub', category: 'Complete Brand Design' },
+  { client: 'Shree Diamonds', category: 'Digital Marketing' },
+  { client: 'DHANVINE JEWELS', category: 'Digital Marketing' },
+];
+
+const CaseStudies = ({ title, description, itemsType, activeItemSlug, withoutTitleLink, useKsProjects = true }) => {
   const [wrapperRef, isWrapperInView] = useInView({ triggerOnce: true, rootMargin: '500px' });
   const {
     allMdx: { nodes },
@@ -124,47 +146,65 @@ const CaseStudies = ({ title, itemsType, activeItemSlug, withoutTitleLink }) => 
       return false;
     });
 
-  const itemsToRender = itemsType === 'open-source' ? items.slice(0, 6) : items;
+  const sectionTitle = title || 'Our Portfolio';
+  const sectionDesc = description || "See how we've helped brands achieve remarkable growth";
 
   return (
-    <section className="safe-paddings mt-52 lg:mt-36 md:mt-28 sm:mt-20" ref={wrapperRef}>
+    <section className="safe-paddings mt-28 lg:mt-24 md:mt-20 sm:mt-16" id="portfolio" ref={wrapperRef}>
       <div className="container">
-        <h2 className="max-w-[950px] text-4xl font-normal leading-snug lg:text-[32px] sm:text-2xl">
-          <span className="with-text-highlight-red" dangerouslySetInnerHTML={{ __html: title }} />{' '}
-          {!withoutTitleLink && (
-            <Link to={LINKS.caseStudies} size="4xl" theme="arrow-red">
-              See all cases
-            </Link>
-          )}
-        </h2>
-        <ul className="grid-gap-x mt-16 grid grid-cols-3 gap-y-12 lg:mt-14 lg:gap-y-10 md:mt-11 md:grid-cols-2 md:gap-y-9 sm:mt-10 sm:block sm:space-y-8">
-          {itemsToRender.map(({ fields: { slug }, frontmatter, githubStars }, index) => (
-            <li key={index}>
-              <Card
-                {...frontmatter}
-                slug={slug}
-                githubStars={githubStars}
-                isWrapperInView={isWrapperInView}
-              />
-            </li>
-          ))}
-        </ul>
+        {useKsProjects ? (
+          <Showcase5 title={title} description={description} />
+        ) : (
+          <>
+            <div className="max-w-[850px]">
+              <h2 className="text-4xl font-normal leading-snug lg:text-[32px] sm:text-2xl">
+                {typeof sectionTitle === 'string' ? (
+                  <span className="with-text-highlight-red">{sectionTitle}</span>
+                ) : (
+                  sectionTitle
+                )}
+              </h2>
+              {sectionDesc && (
+                <p className="mt-3 text-lg text-gray-7 text-black/70 dark:text-white/70 sm:text-base">
+                  {sectionDesc}
+                </p>
+              )}
+            </div>
+            <ul className="grid-gap-x mt-16 grid grid-cols-3 gap-y-12 lg:mt-14 lg:gap-y-10 md:mt-11 md:grid-cols-2 md:gap-y-9 sm:mt-10 sm:block sm:space-y-8">
+              {items.slice(0, 6).map(({ fields: { slug }, frontmatter, githubStars }, index) => (
+                <li key={index}>
+                  <Card
+                    {...frontmatter}
+                    slug={slug}
+                    githubStars={githubStars}
+                    isWrapperInView={isWrapperInView}
+                  />
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
     </section>
   );
 };
 
 CaseStudies.propTypes = {
-  title: PropTypes.node.isRequired,
+  title: PropTypes.node,
+  description: PropTypes.string,
   itemsType: PropTypes.oneOf(['open-source', 'not-featured']),
   activeItemSlug: PropTypes.string,
   withoutTitleLink: PropTypes.bool,
+  useKsProjects: PropTypes.bool,
 };
 
 CaseStudies.defaultProps = {
+  title: null,
+  description: null,
   itemsType: 'open-source',
   activeItemSlug: '',
-  withoutTitleLink: false,
+  withoutTitleLink: true,
+  useKsProjects: true,
 };
 
 export default CaseStudies;

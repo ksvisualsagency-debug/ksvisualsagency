@@ -1,35 +1,45 @@
 export default {
-  servicesWebDesign: {
-    title: 'Web Design — Pixel Point',
+  home: {
+    title: 'K’s visuals — Premium Marketing & Creative Solutions',
     description:
-      'Get a stunning-looking website made by in-house team of motion, graphic, and web designers.',
+      'K’s visuals helps businesses grow through digital marketing, brand identity, content strategy, PPC advertising and creative marketing solutions.',
+  },
+  servicesWebDesign: {
+    title: 'Brand & Marketing Solutions — K’s visuals',
+    description:
+      'Boost your online presence with SEO, SEM, and social media marketing strategies that drive results.',
   },
   servicesWebDevelopment: {
-    title: 'Web Development — Pixel Point',
+    title: 'Digital & Growth Solutions — K’s visuals',
     description:
-      'Have a reliable web platform built with React, third parties, and integrations at your disposal.',
+      'Email servicing, analytics, and targeted PPC campaigns delivering measurable business growth.',
   },
   about: {
-    title: 'About Us - Pixel Point',
+    title: 'Why Choose Us — K’s visuals',
     description:
-      'Learn the Pixel Point origin and the team standing behind world-class marketing websites.',
+      'With over 3+ years of experience in marketing, we help businesses achieve their goals through innovative strategies.',
+  },
+  contact: {
+    title: 'Start a Project & Get In Touch — K’s visuals',
+    description:
+      'Ready to accelerate your business? Contact K’s visuals for digital marketing, bespoke brand identities, custom CRM software, and web development.',
   },
   blog: {
-    title: 'Our Blog — Pixel Point',
+    title: 'Insights & Resources — K’s visuals',
     description:
-      'Collective team experience shared through articles, digests, and tutorials on web design and development.',
+      'Marketing strategies, brand identity tips, and actionable business insights from K’s visuals.',
   },
   blogPost: ({ title, description, ogImage }) => ({
-    title: `${title} — Pixel Point`,
+    title: `${title} — K’s visuals`,
     description,
     ogImage,
   }),
   caseStudies: {
-    title: 'Case Studies — Pixel Point',
-    description: 'See how we have helped our customers achieve their goals.',
+    title: 'Our Portfolio — K’s visuals',
+    description: 'See how we have helped brands achieve remarkable growth.',
   },
   caseStudy: ({ title, description }) => ({
-    title: `${title} — Pixel Point`,
+    title: `${title} — K’s visuals`,
     description,
   }),
 };

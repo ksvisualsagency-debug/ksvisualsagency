@@ -4,26 +4,24 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-const items = [
+const defaultItems = [
   {
-    name: 'Performance',
-    value: '93',
-    circleValue: 93,
+    name: 'Projects Delivered',
+    value: '15',
+    suffix: '+',
+    circleValue: 85,
   },
   {
-    name: 'Accessibility',
-    value: '100',
-    circleValue: 100,
+    name: 'Client Satisfaction',
+    value: '97',
+    suffix: '%',
+    circleValue: 97,
   },
   {
-    name: 'Best practices',
-    value: '92',
-    circleValue: 92,
-  },
-  {
-    name: 'SEO',
-    value: '99',
-    circleValue: 100,
+    name: 'Years Experience',
+    value: '3',
+    suffix: '+',
+    circleValue: 75,
   },
 ];
 
@@ -35,7 +33,7 @@ const itemCircleVariants = {
   }),
 };
 
-const Value = ({ className, value }) => {
+const Value = ({ className, value, suffix }) => {
   const nodeRef = useRef();
 
   useEffect(() => {
@@ -43,13 +41,13 @@ const Value = ({ className, value }) => {
 
     const controls = animate(0, Number(value), {
       duration: 2,
-      onUpdate(value) {
-        node.textContent = value.toFixed();
+      onUpdate(val) {
+        node.textContent = `${val.toFixed()}${suffix || ''}`;
       },
     });
 
     return () => controls.stop();
-  }, [value]);
+  }, [value, suffix]);
 
   return <span className={className} ref={nodeRef} />;
 };
@@ -57,9 +55,14 @@ const Value = ({ className, value }) => {
 Value.propTypes = {
   className: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
+  suffix: PropTypes.string,
 };
 
-const Lighthouse = () => {
+Value.defaultProps = {
+  suffix: '',
+};
+
+const Lighthouse = ({ title, items = defaultItems, className }) => {
   const [itemsWrapperRef, isItemsWrapperInView] = useInView({ triggerOnce: true, threshold: 0.2 });
 
   const itemsWrapperControls = useAnimation();
@@ -69,20 +72,26 @@ const Lighthouse = () => {
   }, [isItemsWrapperInView, itemsWrapperControls]);
 
   return (
-    <section className="safe-paddings mt-52 lg:mt-36 sm:mt-20">
+    <section className={clsx('safe-paddings mt-52 lg:mt-36 sm:mt-20', className)}>
       <div className="container">
-        <h2 className="with-text-highlight-red mx-auto max-w-[1008px] text-center text-6xl font-normal leading-snug lg:max-w-[782px] lg:text-[42px] md:text-4xl sm:text-2xl">
-          Always in the upper <span>Lighthouse</span> threshold to outperform competitors
-        </h2>
+        {title !== false && (
+          <h2 className="with-text-highlight-red mx-auto max-w-[1008px] text-center text-6xl font-normal leading-snug lg:max-w-[782px] lg:text-[42px] md:text-4xl sm:text-2xl">
+            {title || (
+              <>
+                Proven track record of <span>measurable results</span>
+              </>
+            )}
+          </h2>
+        )}
         <motion.ul
-          className="mt-16 flex justify-center space-x-44 lg:mt-14 lg:space-x-32 md:mt-12 md:justify-between md:space-x-0 sm:mt-11 sm:flex-wrap"
+          className="mt-16 flex justify-center space-x-32 lg:mt-14 lg:space-x-24 md:mt-12 md:justify-around md:space-x-0 sm:mt-11 sm:flex-wrap sm:gap-y-8"
           initial="initial"
           animate={itemsWrapperControls}
           ref={itemsWrapperRef}
         >
-          {items.map(({ name, value, circleValue }, index) => (
+          {items.map(({ name, value, suffix, circleValue }, index) => (
             <li
-              className={clsx('sm:basis-1/2', (index === 2 || index === 3) && 'sm:mt-11')}
+              className={clsx('sm:basis-1/2', index === 2 && 'sm:basis-full sm:mt-4')}
               key={index}
             >
               <div className="relative mx-auto h-36 w-36 lg:h-28 lg:w-28 md:h-24 md:w-24">
@@ -111,12 +120,13 @@ const Lighthouse = () => {
                 </svg>
                 {isItemsWrapperInView && (
                   <Value
-                    className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-5xl font-normal lg:text-4xl md:text-3xl"
+                    className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-5xl font-normal lg:text-4xl md:text-3xl whitespace-nowrap"
                     value={value}
+                    suffix={suffix}
                   />
                 )}
               </div>
-              <div className="mt-4 text-center text-lg font-normal">{name}</div>
+              <div className="mt-4 text-center text-lg font-normal sm:text-base">{name}</div>
             </li>
           ))}
         </motion.ul>

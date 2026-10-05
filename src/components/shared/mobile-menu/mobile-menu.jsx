@@ -23,7 +23,7 @@ const MobileMenu = ({ isOpen, headerRef, onOutsideClick }) => {
   return (
     <nav
       className={clsx(
-        'invisible absolute left-1.5 top-1.5 right-1.5 z-40 hidden rounded-xl border border-gray-3 bg-white px-6 pt-24 pb-5 opacity-0 transition-[opacity,visibility] duration-200 dark:text-black md:block sm:pt-20',
+        'invisible absolute left-1.5 top-1.5 right-1.5 z-40 hidden rounded-xl border border-gray-3 bg-white px-6 pt-24 pb-5 opacity-0 transition-[opacity,visibility] duration-200 dark:border-gray-8 dark:bg-gray-9 dark:text-white md:block sm:pt-20',
         isOpen && '!visible !opacity-100'
       )}
       style={{ boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.2)' }}
@@ -31,7 +31,7 @@ const MobileMenu = ({ isOpen, headerRef, onOutsideClick }) => {
     >
       <ul>
         {MENUS.mobile.map(({ text, to, items }, index) => (
-          <li className={clsx('border-b border-b-gray-3', items?.length > 0 && 'pb-5')} key={index}>
+          <li className={clsx('border-b border-b-gray-3 dark:border-b-gray-8', items?.length > 0 && 'pb-5')} key={index}>
             <Link
               className={clsx('block text-lg font-normal leading-none', !items && 'py-5')}
               to={to}
@@ -61,11 +61,11 @@ const MobileMenu = ({ isOpen, headerRef, onOutsideClick }) => {
         <li>
           <Link
             className="!flex py-5 !text-lg"
-            to={LINKS.getInTouch}
+            to={LINKS.getStarted}
             size="lg-only"
             theme="arrow-red"
           >
-            Get in touch
+            Get Started
           </Link>
         </li>
       </ul>

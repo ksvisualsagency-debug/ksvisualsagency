@@ -16,11 +16,11 @@ const wrapESMPlugin = (name) =>
 
 module.exports = {
   trailingSlash: 'always',
-  flags: { DEV_SSR: process.env.GATSBY_DEV_SSR || false },
+  flags: { DEV_SSR: process.env.GATSBY_DEV_SSR === 'true' },
   siteMetadata: {
-    siteTitle: 'Pixel Point — Web Design and Development',
+    siteTitle: 'K’s visuals — Premium Marketing & Creative Solutions',
     siteDescription:
-      'Design and development of outstanding marketing websites that convert visitors into customers.',
+      'K’s visuals helps businesses grow through digital marketing, brand identity, content strategy, PPC advertising and creative marketing solutions.',
     siteImage: '/images/social-preview.jpg',
     siteLanguage: 'en',
     siteUrl: process.env.GATSBY_DEFAULT_SITE_URL || 'http://localhost:8000',
@@ -96,6 +96,12 @@ module.exports = {
                 'removeDimensions',
               ],
             },
+          },
+        ],
+        urlSvgOptions: [
+          {
+            test: /\.svg$/,
+            svgo: false,
           },
         ],
       },

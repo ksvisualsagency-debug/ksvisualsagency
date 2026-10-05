@@ -1,17 +1,18 @@
 {
-  "name": "pixelpoint-website",
-  "version": "0.1.0",
-  "description": "Design and development of outstanding marketing websites that convert visitors into customers",
+  "name": "ksvisualsagency",
+  "version": "1.0.0",
+  "description": "K’s visuals — Premium Marketing & Creative Solutions",
   "keywords": [
     "react",
     "gatsby",
     "tailwindcss",
     "rive",
-    "next-js"
+    "marketing",
+    "agency"
   ],
   "license": "MIT",
-  "homepage": "https://pixelpoint.io",
-  "author": "Pixel Point <info@pixelpoint.io> (https://pixelpoint.io)",
+  "homepage": "https://github.com/ksvisualsagency-debug/ksvisualsagency",
+  "author": "K's visuals <ksvisualsagency@gmail.com>",
   "engines": {
     "node": "22.0.0",
     "npm": ">=8.6.0"
