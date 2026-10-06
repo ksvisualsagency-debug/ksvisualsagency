@@ -35,18 +35,19 @@ const Layout = ({ headerClassName, headerTheme, headerShowThemeButton, children 
         aria-hidden="true"
       >
         <DotField
-          dotRadius={2.2}
-          dotSpacing={22}
-          cursorRadius={320}
-          cursorForce={0.18}
+          dotRadius={1.1}
+          dotSpacing={18}
+          dotColor="rgba(140, 145, 160, 0.32)"
+          gradientFrom="rgba(140, 145, 160, 0.32)"
+          gradientTo="rgba(140, 145, 160, 0.32)"
+          glowColor="rgba(140, 145, 160, 0.12)"
+          cursorRadius={300}
+          cursorForce={0.12}
           bulgeOnly={true}
-          bulgeStrength={55}
-          glowRadius={200}
-          sparkle={true}
-          waveAmplitude={2.2}
-          gradientFrom="rgba(238, 43, 108, 0.85)"
-          gradientTo="rgba(43, 75, 238, 0.8)"
-          glowColor="rgba(238, 43, 108, 0.35)"
+          bulgeStrength={50}
+          glowRadius={160}
+          sparkle={false}
+          waveAmplitude={0.8}
         />
       </div>
 

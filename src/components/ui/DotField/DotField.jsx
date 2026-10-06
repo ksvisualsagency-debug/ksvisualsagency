@@ -12,18 +12,19 @@ const TWO_PI = Math.PI * 2;
  * Interactive dot grid with cursor bulge, glow, sparkle, and wave effects.
  */
 const DotField = memo(({
-  dotRadius = 1.5,
-  dotSpacing = 14,
-  cursorRadius = 500,
-  cursorForce = 0.1,
+  dotRadius = 1.1,
+  dotSpacing = 18,
+  dotColor = 'rgba(130, 135, 150, 0.35)',
+  cursorRadius = 320,
+  cursorForce = 0.12,
   bulgeOnly = true,
-  bulgeStrength = 67,
+  bulgeStrength = 55,
   glowRadius = 160,
   sparkle = false,
-  waveAmplitude = 0,
-  gradientFrom = 'rgba(168, 85, 247, 0.35)',
-  gradientTo = 'rgba(180, 151, 207, 0.25)',
-  glowColor = '#120F17',
+  waveAmplitude = 0.8,
+  gradientFrom = 'rgba(130, 135, 150, 0.35)',
+  gradientTo = 'rgba(130, 135, 150, 0.35)',
+  glowColor = 'rgba(140, 145, 160, 0.12)',
   className = '',
   ...rest
 }) => {
@@ -40,6 +41,7 @@ const DotField = memo(({
   propsRef.current = {
     dotRadius,
     dotSpacing,
+    dotColor,
     cursorRadius,
     cursorForce,
     bulgeOnly,
@@ -177,15 +179,19 @@ const DotField = memo(({
       ctx.clearRect(0, 0, w, h);
 
       if (w > 0 && h > 0) {
-        const grad = ctx.createLinearGradient(0, 0, w, h);
-        grad.addColorStop(0, p.gradientFrom);
-        grad.addColorStop(1, p.gradientTo);
-        ctx.fillStyle = grad;
+        if (p.gradientFrom && p.gradientTo && p.gradientFrom !== p.gradientTo) {
+          const grad = ctx.createLinearGradient(0, 0, w, h);
+          grad.addColorStop(0, p.gradientFrom);
+          grad.addColorStop(1, p.gradientTo);
+          ctx.fillStyle = grad;
+        } else {
+          ctx.fillStyle = p.dotColor || p.gradientFrom || 'rgba(130, 135, 150, 0.35)';
+        }
       }
 
       const cr = p.cursorRadius;
       const crSq = cr * cr;
-      const rad = p.dotRadius / 2;
+      const rad = p.dotRadius;
       const isBulge = p.bulgeOnly;
 
       ctx.beginPath();
