@@ -167,7 +167,9 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-canonical-urls',
       options: {
-        siteUrl: process.env.GATSBY_DEFAULT_SITE_URL,
+        siteUrl:
+          process.env.GATSBY_DEFAULT_SITE_URL ||
+          'https://ksvisualsagency-git-main-ksvisuals.vercel.app',
       },
     },
   ],
